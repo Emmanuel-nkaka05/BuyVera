@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-4">
+                    <h5 class="font-weight-bold mb-4">My Account</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action border-0 px-0 font-weight-bold" style="color: var(--brand-gold);"><i class="fa fa-dashboard mr-2"></i> Dashboard</a>
+                        <a href="{% url 'my_orders' %}" class="list-group-item list-group-item-action border-0 px-0 text-muted font-weight-bold"><i class="fa fa-box mr-2"></i> My Orders</a>
+                        <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action border-0 px-0 text-muted font-weight-bold"><i class="fa fa-user mr-2"></i> Edit Profile</a>
+                        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action border-0 px-0 text-danger font-weight-bold mt-3"><i class="fa fa-sign-out mr-2"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Welcome Card -->
+            <div class="card border-0 shadow-sm rounded-lg mb-4">
+                <div class="card-body p-4">
+                    <h4 class="font-weight-bold mb-1">Welcome back, {{ request.user.first_name }}!</h4>
+                    <p class="text-muted mb-0">Here is an overview of your seller account.</p>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-md-6 border-right">
+                            <h6 class="text-muted font-weight-bold">Total Purchases</h6>
+                            <h3 class="font-weight-bold" style="color: var(--brand-gold);">{{ orders_count }}</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted font-weight-bold">My Uploaded Products</h6>
+                            <h3 class="font-weight-bold" style="color: var(--brand-gold);">{{ my_products.count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seller Product Management -->
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="font-weight-bold mb-0">My Uploaded Electronics</h5>
+                        <a href="{% url 'add_product' %}" class="btn btn-gold btn-sm"><i class="fa fa-plus mr-1"></i> Upload New</a>
+                    </div>
+
+                    {% if my_products %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in my_products %}
+                                <tr>
+                                    <!-- Add this inside your table row -->
+<td>
+    <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-primary">Edit</a>
+</td>
+                                    <td><img src="{{ product.images.url }}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded"></td>
+                                    <td class="font-weight-bold">{{ product.product_name }}</td>
+                                    <td>K{{ product.price }}</td>
+                                    <td>{{ product.stock }}</td>
+                                    <td>
+                                        {% if product.is_available %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
+                        <p class="text-muted">You haven't uploaded any products yet.</p>
+                        <a href="{% url 'add_product' %}" class="btn btn-gold mt-2">Upload Your First Product</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

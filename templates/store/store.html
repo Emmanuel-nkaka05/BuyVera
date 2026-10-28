@@ -48,38 +48,6 @@
 	</article> <!-- filter-group  .// -->
 	<article class="filter-group">
 		<header class="card-header">
-			<a href="#" data-toggle="collapse" data-target="#collapse_4" aria-expanded="true" class="">
-				<i class="icon-control fa fa-chevron-down"></i>
-				<h6 class="title">Sizes </h6>
-			</a>
-		</header>
-		<div class="filter-content collapse show" id="collapse_4" style="">
-			<div class="card-body">
-			  <label class="checkbox-btn">
-			    <input type="checkbox">
-			    <span class="btn btn-light"> XS </span>
-			  </label>
-
-			  <label class="checkbox-btn">
-			    <input type="checkbox">
-			    <span class="btn btn-light"> SM </span>
-			  </label>
-
-			  <label class="checkbox-btn">
-			    <input type="checkbox">
-			    <span class="btn btn-light"> LG </span>
-			  </label>
-
-			  <label class="checkbox-btn">
-			    <input type="checkbox">
-			    <span class="btn btn-light"> XXL </span>
-			  </label>
-		</div><!-- card-body.// -->
-		</div>
-	</article> <!-- filter-group .// -->
-	
-	<article class="filter-group">
-		<header class="card-header">
 			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
 				<i class="icon-control fa fa-chevron-down"></i>
 				<h6 class="title">Price range </h6>
@@ -93,25 +61,36 @@
 				  <label>Min</label>
 				  <!-- <input class="form-control" placeholder="$0" type="number"> -->
 				  	<select class="mr-2 form-control">
-						<option value="0">$0</option>
-						<option value="50">$50</option>
-						<option value="100">$100</option>
-						<option value="150">$150</option>
-						<option value="200">$200</option>
-						<option value="500">$500</option>
-						<option value="1000">$1000</option>
+						<option value="0">K 0</option>
+						<option value="50">K 50</option>
+						<option value="100">K 100</option>
+						<option value="150">K 150</option>
+						<option value="200">K 200</option>
+						<option value="500">K 500</option>
+						<option value="1000">K 1000</option>
+                       <option value="0">K 2500</option>
+						<option value="50">K 3500</option>
+						<option value="100">K 5000</option>
+						<option value="150">K 7500</option>
+						<option value="200">K 10000</option>
+
 					</select>
 				</div>
 				<div class="form-group text-right col-md-6">
 				  <label>Max</label>
 				  	<select class="mr-2 form-control">
-						<option value="50">$50</option>
-						<option value="100">$100</option>
-						<option value="150">$150</option>
-						<option value="200">$200</option>
-						<option value="500">$500</option>
-						<option value="1000">$1000</option>
-						<option value="2000">$2000+</option>
+						<option value="0">K 0</option>
+						<option value="50">K 50</option>
+						<option value="100">K 100</option>
+						<option value="150">K 150</option>
+						<option value="200">K 200</option>
+						<option value="500">K 500</option>
+						<option value="1000">K 1000</option>
+                       <option value="0">K 2500</option>
+						<option value="50">K 3500</option>
+						<option value="100">K 5000</option>
+						<option value="150">K 7500</option>
+						<option value="200">K 10000</option>
 					</select>
 				</div>
 				</div> <!-- form-row.// -->
@@ -123,51 +102,72 @@
 </div> <!-- card.// -->
 
 	</aside> <!-- col.// -->
-	<main class="col-md-9">
+<main class="col-md-9">
+    <header class="border-bottom mb-4 pb-3">
+        <div class="form-inline">
+            <span class="mr-md-auto"> Found <b>{{ product_count }}</b> items found</span>
+        </div>
+    </header>
 
-<header class="border-bottom mb-4 pb-3">
-		<div class="form-inline">
-			<span class="mr-md-auto"> Found <b>{{ product_count }}</b> items found</span>
-			
-		</div>
-</header><!-- sect-heading -->
+    <div class="row">
+        {% if products %}
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <figure class="card card-product-grid h-100 shadow-sm border-0">
+                    <div class="img-wrap position-relative">
+                        <a href="{{ product.get_url }}">
+                            <img src="{{ product.images.url }}" style="height: 200px; width: 100%; object-fit: cover;">
+                        </a>
+                    </div>
+                    <figcaption class="info-wrap p-3">
+                        <div class="fix-height">
+                            <a href="{{ product.get_url }}" class="title text-dark font-weight-bold">{{ product.product_name }}</a>
+                            <div class="price-wrap mt-2">
+                                <span class="price font-weight-bold" style="color: var(--brand-gold);">K{{ product.price }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'add_cart' product.id %}" class="btn btn-gold btn-block mt-3">Add to cart</a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
+                <h5>No products found.</h5>
+                <p class="text-muted">Try adjusting your search or filter to find what you're looking for.</p>
+                <a href="{% url 'store' %}" class="btn btn-outline-gold mt-2">Clear Filters</a>
+            </div>
+        {% endif %}
+    </div>
 
-<div class="row">
- {% for product in products%}
-	<div class="col-md-4">
-		<figure class="card card-product-grid">
-			<div class="img-wrap"> 
-				
-				<a href="{{ product.get_url }}"><img src="{{ product.images.url }}">
-				
-			</div> <!-- img-wrap.// -->
-			<figcaption class="info-wrap">
-				<div class="fix-height">
-					<a href="{{ product.get_url }}" class="title"> {{product.product_name}}</a>
-					<div class="price-wrap mt-2">
-						<span class="price">$ {{product.price}}</span>
-						
-					</div> <!-- price-wrap.// -->
-				</div>
-				<a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-primary">Add to cart </a>
-			</figcaption>
-		</figure>
-	</div> <!-- col.// -->
-	 {% endfor%}
-</div> <!-- row end.// -->
+    <!-- Pagination (Only show if products exist) -->
+    {% if products and products.has_other_pages %}
+    <nav class="mt-4" aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if products.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+        {% endif %}
 
+        {% for i in products.paginator.page_range %}
+            {% if products.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
 
-<nav class="mt-4" aria-label="Page navigation sample">
-  <ul class="pagination">
-    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-  </ul>
-</nav>
-
-	</main> <!-- col.// -->
+        {% if products.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">Next</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+</main>
 
 </div>
 

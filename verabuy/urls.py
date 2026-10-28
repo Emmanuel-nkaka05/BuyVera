@@ -23,6 +23,11 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('store/',include('store.urls')),
-    path('cart/',include('carts.urls')),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    path('store/', include('store.urls')),
+    path('cart/', include('carts.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('dashboard/', include('dashboard.urls')), # <-- ADD THIS
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'store.views.handler404'
+handler500 = 'store.views.handler500'

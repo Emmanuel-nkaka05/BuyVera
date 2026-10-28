@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="font-weight-bold">Edit Product: {{ product.product_name }}</h4>
+                    <hr>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Stock Quantity</label>
+                            <input type="number" name="stock" value="{{ product.stock }}" class="form-control" required>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input type="checkbox" name="is_available" class="form-check-input" id="avail" {% if product.is_available %}checked{% endif %}>
+                            <label class="form-check-label" for="avail">Is Available for Sale</label>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input type="checkbox" name="is_deals" class="form-check-input" id="deals" {% if product.is_deals %}checked{% endif %}>
+                            <label class="form-check-label text-danger font-weight-bold" for="deals"><i class="fa fa-fire"></i> Mark as Hot Deal</label>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

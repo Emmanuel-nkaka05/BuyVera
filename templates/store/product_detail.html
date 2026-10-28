@@ -6,74 +6,102 @@
 <div class="container">
 
 <!-- ============================ COMPONENT 1 ================================= -->
-<div class="card">
+<div class="card border-0 shadow-sm rounded-lg">
 	<div class="row no-gutters">
+		
+        <!-- Product Image -->
 		<aside class="col-md-6">
-<article class="gallery-wrap"> 
-	<div class="img-big-wrap">
-	  <a href="#"><img src="{{ single_product.images.url }}"></a>
-	</div> <!-- img-big-wrap.// -->
-	
-</article> <!-- gallery-wrap .end// -->
+            <article class="gallery-wrap p-4"> 
+                <div class="img-big-wrap">
+                <a href="#"><img src="{{ single_product.images.url }}" class="img-fluid rounded" style="width: 100%; object-fit: cover;"></a>
+                </div> <!-- img-big-wrap.// -->
+            </article> <!-- gallery-wrap .end// -->
 		</aside>
+		
+        <!-- Product Details -->
 		<main class="col-md-6 border-left">
-<article class="content-body">
+            <article class="content-body p-4">
 
-<h2 class="title">{{ single_product.product_name }}</h2>
+                <h2 class="title font-weight-bold">{{ single_product.product_name }}</h2>
 
-<div class="mb-3"> 
-	<var class="price h4">{{ single_product.price }}</var> 
-</div> 
+                <!-- Stock Status -->
+                <div class="mb-3">
+                    {% if single_product.stock > 0 %}
+                        <span class="badge badge-success p-2"><i class="fa fa-check-circle"></i> In Stock: {{ single_product.stock }}</span>
+                    {% else %}
+                        <span class="badge badge-danger p-2"><i class="fa fa-times-circle"></i> Out of Stock</span>
+                    {% endif %}
+                </div>
 
-<p>{{ single_product.description }}</p>
+                <div class="mb-4"> 
+                    <var class="price h3 font-weight-bold" style="color: var(--brand-gold);">K {{ single_product.price|floatformat:2 }}</var> 
+                </div> 
 
+                <p class="text-muted">{{ single_product.description }}</p>
+                <hr>
 
-<hr>
-	<div class="row">
-		<div class="item-option-select">
-			<h6>Choose Color</h6>
-			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Silver
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color" > Gray
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color checked"> Gold
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Black
-			  </label>
-			</div> 
-		</div>
-	</div> <!-- row.// -->
-	<div class="row">
-		<div class="item-option-select">
-			<h6>Select Size</h6>
-			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> S
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color" checked> M
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> L
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> XL
-			  </label>
-			</div> 
-		</div>
-	</div> <!-- row.// -->
-	<hr>
-	 {% if single_product.stock <= 0 %}
-	 <h5 style="color: red">Out of stock</h5>
-	  {% else %}
-	<a href="{% url 'add_cart' single_product.id %}" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
-	 {% endif %}
-</article> <!-- product-info-aside .// -->
+                <!-- ============================ VARIATIONS FORM ================================= -->
+                <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <!-- COLORS -->
+                    {% if variations %}
+                    <div class="row">
+                        <div class="item-option-select">
+                            <h6>Choose Color</h6>
+                            <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                {% for variation in variations %}
+                                    {% if variation.variation_category == 'color' %}
+                                    <label class="btn btn-light border">
+                                        <input type="radio" name="color" value="{{ variation.variation_value }}" required> {{ variation.variation_value }}
+                                    </label>
+                                    {% endif %}
+                                {% endfor %}
+                            </div> 
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- SIZES -->
+                    {% if variations %}
+                    <div class="row mt-2">
+                        <div class="item-option-select">
+                            <h6>Select Size</h6>
+                            <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                {% for variation in variations %}
+                                    {% if variation.variation_category == 'size' %}
+                                    <label class="btn btn-light border">
+                                        <input type="radio" name="size" value="{{ variation.variation_value }}" required> {{ variation.variation_value }}
+                                    </label>
+                                    {% endif %}
+                                {% endfor %}
+                            </div> 
+                        </div>
+                    </div> <!-- row.// -->
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <!-- ADD TO CART BUTTON -->
+                    {% if single_product.stock <= 0 %}
+                        <h5 style="color: red" class="font-weight-bold">Out of stock</h5>
+                    {% else %}
+                        {% if in_cart %}
+                            <!-- If already in cart, show Go to Cart -->
+                            <a href="{% url 'cart' %}" class="btn btn-warning text-white btn-lg w-100">
+                                <i class="fa fa-shopping-cart mr-2"></i> Go to Cart
+                            </a>
+                        {% else %}
+                            <!-- Otherwise, show Add to Cart -->
+                            <button type="submit" class="btn btn-gold btn-lg w-100"> 
+                                <span class="text">Add to cart</span> <i class="fas fa-shopping-cart ml-2"></i>  
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                </form>
+                <!-- ============================ VARIATIONS FORM END ================================= -->
+
+            </article> <!-- product-info-aside .// -->
 		</main> <!-- col.// -->
 	</div> <!-- row.// -->
 </div> <!-- card.// -->
@@ -81,37 +109,85 @@
 
 <br>
 
+<!-- ========================= REVIEWS ========================= -->
 <div class="row">
-			<div class="col-md-9">
+    <div class="col-md-9">
+        <header class="section-heading border-bottom pb-2 mb-4">
+            <h3 class="font-weight-bold">Customer Reviews</h3>  
+        </header>
 
-	<header class="section-heading">
-		<h3>Customer Reviews </h3>  
-		
-	</header>
+        <!-- Review Form (Only if they bought it) -->
+        {% if orderproduct %}
+        <form action="{% url 'submit_review' single_product.id %}" method="POST" class="mb-5">
+            {% csrf_token %}
+            <h5 class="font-weight-bold">Write your review</h5>
+            <div class="card bg-light border-0 p-4 mt-3">
+                <!-- Rating Stars -->
+                <label class="font-weight-bold">How do you rate this product?</label>
+                <br>
+                <div class="rate">
+                    <input type="radio" id="rating10" name="rating" value="5" required><label for="rating10" title="5"></label>
+                    <input type="radio" id="rating9" name="rating" value="4.5"><label for="rating9" title="4.5" class="half"></label>
+                    <input type="radio" id="rating8" name="rating" value="4"><label for="rating8" title="4"></label>
+                    <input type="radio" id="rating7" name="rating" value="3.5"><label for="rating7" title="3.5" class="half"></label>
+                    <input type="radio" id="rating6" name="rating" value="3"><label for="rating6" title="3"></label>
+                    <input type="radio" id="rating5" name="rating" value="2.5"><label for="rating5" title="2.5" class="half"></label>
+                    <input type="radio" id="rating4" name="rating" value="2"><label for="rating4" title="2"></label>
+                    <input type="radio" id="rating3" name="rating" value="1.5"><label for="rating3" title="1.5" class="half"></label>
+                    <input type="radio" id="rating2" name="rating" value="1"><label for="rating2" title="1"></label>
+                    <input type="radio" id="rating1" name="rating" value="0.5"><label for="rating1" title="0.5" class="half"></label>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label class="font-weight-bold">Subject</label>
+                    <input type="text" class="form-control" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold">Review</label>
+                    <textarea name="review" rows="4" class="form-control" required></textarea>
+                </div>
+                <input type="submit" value="Submit Review" class="btn btn-gold mt-2">
+            </div>
+        </form>
+        <br>
+        {% else %}
+            <div class="alert alert-warning">
+                You must purchase this product to write a review.
+            </div>
+        {% endif %}
 
-	<article class="box mb-3">
-		<div class="icontext w-100">
-			<img src=" {% static './images/avatars/avatar1.jpg'%}" class="img-xs icon rounded-circle">
-			<div class="text">
-				<span class="date text-muted float-md-right">24.04.2020 </span>  
-				<h6 class="mb-1">Mike John </h6>
-				
-			</div>
-		</div> <!-- icontext.// -->
-		<div class="mt-3">
-			<p>
-				Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-				quis nostrud exercitation ullamco laboris nisi ut aliquip
-			</p>	
-		</div>
-	</article>
-
-	
-
-	</div> <!-- col.// -->
-</div> <!-- row.// -->
-
+        <!-- Display Reviews -->
+        {% for review in reviews %}
+        <article class="box mb-4 border-bottom pb-3">
+            <div class="icontext w-100 d-flex align-items-center mb-2">
+                <img src="{% static './images/avatars/avatar1.jpg'%}" class="img-xs icon rounded-circle mr-3" style="width: 50px; height: 50px; object-fit: cover;">
+                <div class="text">
+                    <h6 class="mb-1 font-weight-bold">{{ review.user.first_name }} </h6>
+                    <span class="date text-muted small">{{ review.updated_at|date:"M d, Y" }}</span>  
+                    <div class="rating-star mt-1" style="color: #ffc700;">
+                        <span>
+                            <i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o{% endif %}"></i>
+                            <i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o{% endif %}"></i>
+                            <i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o{% endif %}"></i>
+                            <i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o{% endif %}"></i>
+                            <i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o{% endif %}"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h6 class="font-weight-bold">{{ review.subject }}</h6>
+                <p class="text-muted">{{ review.review }}</p>	
+            </div>
+        </article>
+        {% endfor %}
+        
+        {% if not reviews %}
+            <p class="text-muted">No reviews yet. Be the first to review this product!</p>
+        {% endif %}
+    </div>
+</div>
+<!-- ========================= REVIEWS END ========================= -->
 
 </div> <!-- container .//  -->
 </section>

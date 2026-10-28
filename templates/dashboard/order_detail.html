@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container py-5">
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-5">
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4"
+      >
+        <h4 class="font-weight-bold mb-0">
+          Receipt for Order #{{ order.order_number }}
+        </h4>
+        <button onclick="window.print()" class="btn btn-outline-dark btn-sm">
+          <i class="fa fa-print"></i> Print
+        </button>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h6 class="font-weight-bold">Billed To:</h6>
+          <p>
+            {{ order.full_name }}<br />
+            {{ order.full_address }}<br />
+            {{ order.city }}, {{ order.state }}<br />
+            {{ order.country }}<br />
+            Phone: {{ order.phone }}
+          </p>
+        </div>
+        <div class="col-md-6 text-right">
+          <h6 class="font-weight-bold">Order Details:</h6>
+          <p>
+            Date: {{ order.created_at|date:"M d, Y" }}<br />
+            Payment: Mock Payment<br />
+            Status: {{ order.status }}
+          </p>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead class="thead-light">
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_products %}
+          <tr>
+            <!-- Show product name -->
+            <td>{{ item.product.product_name }}</td>
+            <!-- Show quantity -->
+            <td>{{ item.quantity }}</td>
+            <!-- Show price -->
+            <td>K{{ item.product_price|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-muted">
+              No products found for this order.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-right mt-4">
+        <p class="mb-1">Subtotal: K{{ order.order_total|floatformat:2 }}</p>
+        <p class="mb-1">Tax: K{{ order.tax|floatformat:2 }}</p>
+        <h5 class="font-weight-bold">
+          Grand Total: K{{ order.order_total|floatformat:2 }}
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

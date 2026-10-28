@@ -1,0 +1,154 @@
+[
+{
+    "model": "category.category",
+    "pk": 6,
+    "fields": {
+        "Category_name": "Smartphones",
+        "slug": "smartphones",
+        "description": "",
+        "cat_image": "photos/categories/Samsung_Galaxy_S26_Ultra_Specifications_and_Key_Features__Is_It_Worth_Buying_.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 7,
+    "fields": {
+        "Category_name": "Laptops",
+        "slug": "laptops",
+        "description": "",
+        "cat_image": "photos/categories/Top_Deals.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 8,
+    "fields": {
+        "Category_name": "Audio",
+        "slug": "audio",
+        "description": "",
+        "cat_image": "photos/categories/Portable_portable_multifunctional_bluetooth_speaker_-_Color.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 9,
+    "fields": {
+        "Category_name": "Camera",
+        "slug": "camera",
+        "description": "",
+        "cat_image": "photos/categories/Product_Photography.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 10,
+    "fields": {
+        "Category_name": "Smartwatches",
+        "slug": "smartwatches",
+        "description": "",
+        "cat_image": "photos/categories/Smartwatch_S10_Série_10_Preto__Relógio_Digital_Masculino_e_Feminino_co_sUXn8ta.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 11,
+    "fields": {
+        "Category_name": "Accessories",
+        "slug": "accessories",
+        "description": "",
+        "cat_image": "photos/categories/Popsugar_Editors_Share_Their_Top_Holiday_Gift_Recs_For_2025.jpg"
+    }
+},
+{
+    "model": "category.category",
+    "pk": 12,
+    "fields": {
+        "Category_name": "Deals",
+        "slug": "deals",
+        "description": "",
+        "cat_image": ""
+    }
+},
+{
+    "model": "category.category",
+    "pk": 13,
+    "fields": {
+        "Category_name": "Gaming",
+        "slug": "gaming",
+        "description": "",
+        "cat_image": ""
+    }
+},
+{
+    "model": "store.product",
+    "pk": 8,
+    "fields": {
+        "product_name": "Iphone x",
+        "slug": "iphone-x",
+        "description": "126gb \r\nwhite in color",
+        "price": 2500,
+        "images": "photos/products/Apple_iPhone_X.jpg",
+        "stock": 30,
+        "is_available": true,
+        "is_deals": false,
+        "category": 6,
+        "seller": 1,
+        "created_date": "2026-10-28",
+        "modified_date": "2026-10-28T09:50:37.002Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 9,
+    "fields": {
+        "product_name": "Iphone 11",
+        "slug": "iphone-11",
+        "description": "",
+        "price": 3480,
+        "images": "photos/products/1151866042163811692.jpg",
+        "stock": 28,
+        "is_available": true,
+        "is_deals": false,
+        "category": 6,
+        "seller": 1,
+        "created_date": "2026-10-28",
+        "modified_date": "2026-10-28T11:23:09.035Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 10,
+    "fields": {
+        "product_name": "Iphone 12",
+        "slug": "iphone-12",
+        "description": "",
+        "price": 3480,
+        "images": "photos/products/Apple_iPhone_12__Prices_1_Colors_Sizes_Features__Specs.jpg",
+        "stock": 10,
+        "is_available": true,
+        "is_deals": false,
+        "category": 6,
+        "seller": 1,
+        "created_date": "2026-10-28",
+        "modified_date": "2026-10-28T10:22:00.282Z"
+    }
+},
+{
+    "model": "store.product",
+    "pk": 11,
+    "fields": {
+        "product_name": "HP Laptop",
+        "slug": "hp-laptop",
+        "description": "",
+        "price": 5000,
+        "images": "photos/products/HP_Laptop_-_14s-dq3001na_14in_N4500.jpg",
+        "stock": 3,
+        "is_available": true,
+        "is_deals": false,
+        "category": 7,
+        "seller": 1,
+        "created_date": "2026-10-28",
+        "modified_date": "2026-10-28T10:22:55.388Z"
+    }
+}
+]

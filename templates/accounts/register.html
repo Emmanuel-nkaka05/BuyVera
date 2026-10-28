@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-content padding-y bg">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <h3 class="text-center mb-4 font-weight-bold">Join Veracart</h3>
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <p class="mb-0">{{ field.label }}: {{ field.errors|striptags }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <form action="{% url 'register' %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- ROLE SELECTION CARDS -->
+                        <div class="mb-4">
+                            <label class="font-weight-bold mb-2">How do you want to use Veracart?</label>
+                            <div class="row">
+                                <!-- Buyer Card -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="role-card w-100 text-center p-4 border rounded-lg cursor-pointer" style="cursor: pointer; transition: 0.3s;">
+                                        <input type="radio" name="role" value="buyer" checked class="d-none">
+                                        <i class="fa fa-shopping-bag fa-3x mb-3" style="color: var(--brand-gold);"></i>
+                                        <h5 class="font-weight-bold">Buyer</h5>
+                                        <p class="text-muted small mb-0">Shop the latest electronics and tech gadgets.</p>
+                                    </label>
+                                </div>
+                                <!-- Seller Card -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="role-card w-100 text-center p-4 border rounded-lg cursor-pointer" style="cursor: pointer; transition: 0.3s;">
+                                        <input type="radio" name="role" value="seller" class="d-none">
+                                        <i class="fa fa-store fa-3x mb-3" style="color: #1C1C1C;"></i>
+                                        <h5 class="font-weight-bold">Seller</h5>
+                                        <p class="text-muted small mb-0">Open your store and sell your tech products.</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- USER INFO -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Phone Number</label>
+                                {{ form.phone_number }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            {{ form.username }}
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Password</label>
+                                {{ form.password }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Confirm Password</label>
+                                {{ form.confirm_password }}
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold btn-block mt-4 py-3">Create Account</button>
+                    </form>
+                    <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}" style="color: var(--brand-gold); font-weight: bold;">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- JavaScript to make the cards change color when clicked -->
+<script>
+    const roleCards = document.querySelectorAll('.role-card');
+    roleCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove highlight from all
+            roleCards.forEach(c => {
+                c.style.borderColor = '#dee2e6';
+                c.style.backgroundColor = '#fff';
+                c.querySelector('input').checked = false;
+            });
+            // Add highlight to clicked
+            this.style.borderColor = 'var(--brand-gold)';
+            this.style.backgroundColor = '#FEF9C3'; // Light gold background
+            this.querySelector('input').checked = true;
+        });
+    });
+
+    // Trigger click on buyer by default to set initial styles
+    document.querySelector('input[value="buyer"]').parentElement.click();
+</script>
+
+{% endblock %}

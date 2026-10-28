@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-4">
+                    <h5 class="font-weight-bold mb-4">My Account</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action border-0 px-0 text-muted font-weight-bold">
+                            <i class="fa fa-dashboard mr-2"></i> Dashboard
+                        </a>
+                        <a href="{% url 'my_orders' %}" class="list-group-item list-group-item-action border-0 px-0 font-weight-bold" style="color: var(--brand-gold);">
+                            <i class="fa fa-box mr-2"></i> My Orders
+                        </a>
+                        <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action border-0 px-0 text-muted font-weight-bold">
+                            <i class="fa fa-user mr-2"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action border-0 px-0 text-danger font-weight-bold mt-3">
+                            <i class="fa fa-sign-out mr-2"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                        <h4 class="font-weight-bold mb-0">Order History</h4>
+                        <a href="{% url 'store' %}" class="btn btn-sm btn-outline-gold">Continue Shopping</a>
+                    </div>
+
+                    {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Billing Name</th>
+                                    <th>Phone</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th class="text-center">Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td class="font-weight-bold">{{ order.order_number }}</td>
+                                    <td>{{ order.full_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td class="font-weight-bold" style="color: var(--brand-gold);">K{{ order.order_total|floatformat:2 }}</td>
+                                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                    <td class="text-center">
+                                        <!-- UPDATED: Link to the Receipt View -->
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-light border font-weight-bold text-primary">
+                                            <i class="fa fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
+                        <h5 class="font-weight-bold">No orders yet!</h5>
+                        <p class="text-muted">Looks like you haven't made any purchases yet.</p>
+                        <a href="{% url 'store' %}" class="btn btn-gold mt-3">Start Shopping</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

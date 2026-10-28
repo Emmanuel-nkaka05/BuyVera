@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-content padding-y bg">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <h3 class="text-center mb-4 font-weight-bold">Sign In to Veracart</h3>
+                    
+                    <form action="{% url 'login' %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Role Selection -->
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold">I am logging in as a:</label>
+                            <div class="d-flex justify-content-around">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="role_buyer" name="role" value="buyer" class="custom-control-input" checked>
+                                    <label class="custom-control-label" for="role_buyer">Buyer</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="role_seller" name="role" value="seller" class="custom-control-input">
+                                    <label class="custom-control-label" for="role_seller">Seller</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter Username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold btn-block text-white mt-4" style="padding: 12px;">Login</button>
+                    </form>
+                    
+                    <p class="text-center mt-4 mb-0">Don't have an account? <a href="{% url 'register' %}" style="color: var(--brand-gold); font-weight: bold;">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+{% endblock %}
