@@ -25,22 +25,25 @@
             <div class="card border-0 shadow-sm rounded-lg mb-4">
                 <div class="card-body p-4">
                     <h4 class="font-weight-bold mb-1">Welcome back, {{ request.user.first_name }}!</h4>
-                    <p class="text-muted mb-0">Here is an overview of your seller account.</p>
+                    <p class="text-muted mb-0">Here is an overview of your account.</p>
                     <hr>
                     <div class="row text-center">
                         <div class="col-md-6 border-right">
                             <h6 class="text-muted font-weight-bold">Total Purchases</h6>
                             <h3 class="font-weight-bold" style="color: var(--brand-gold);">{{ orders_count }}</h3>
                         </div>
+                       {% if request.user.is_seller or request.user.is_superadmin %}
                         <div class="col-md-6">
                             <h6 class="text-muted font-weight-bold">My Uploaded Products</h6>
                             <h3 class="font-weight-bold" style="color: var(--brand-gold);">{{ my_products.count }}</h3>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
-            <!-- Seller Product Management -->
+            <!-- SELLER ONLY SECTION -->
+            {% if request.user.is_seller %}
             <div class="card border-0 shadow-sm rounded-lg">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -58,15 +61,12 @@
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for product in my_products %}
                                 <tr>
-                                    <!-- Add this inside your table row -->
-<td>
-    <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-primary">Edit</a>
-</td>
                                     <td><img src="{{ product.images.url }}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded"></td>
                                     <td class="font-weight-bold">{{ product.product_name }}</td>
                                     <td>K{{ product.price }}</td>
@@ -77,6 +77,9 @@
                                         {% else %}
                                             <span class="badge badge-danger">Inactive</span>
                                         {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-primary">Edit</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -92,6 +95,18 @@
                     {% endif %}
                 </div>
             </div>
+            {% else %}
+            <!-- BUYER MESSAGE -->
+            <div class="card border-0 shadow-sm rounded-lg mt-4">
+                <div class="card-body p-5 text-center">
+                    <i class="fa fa-shopping-bag text-muted fa-4x mb-3"></i>
+                    <h5 class="font-weight-bold">Want to start selling?</h5>
+                    <p class="text-muted">Upgrade your account to a seller account to upload products and manage your own store.</p>
+                    <a href="{% url 'upgrade_seller' %}" class="btn btn-outline-gold mt-2">Become a Seller</a>
+                </div>
+            </div>
+            {% endif %}
+
         </div>
     </div>
 </div>

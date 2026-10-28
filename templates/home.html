@@ -27,7 +27,8 @@
                 <div class="card-body p-3">
                     <a href="{{ deal.get_url }}" class="text-decoration-none text-dark font-weight-bold h6 d-block mb-2">{{ deal.product_name }}</a>
                     <p class="text-danger font-weight-bold">K{{ deal.price|floatformat:2 }}</p>
-                    <a href="{{ deal.get_url }}" class="btn btn-danger btn-sm btn-block">View Deal</a>
+
+<li class="nav-item"><a class="nav-link" style="color: #ff6b6b;" href="{% url 'store' %}?deals=true"><i class="fa fa-fire"></i> Deals</a></li>
                 </div>
             </div>
         </div>

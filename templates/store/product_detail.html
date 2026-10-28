@@ -24,14 +24,17 @@
 
                 <h2 class="title font-weight-bold">{{ single_product.product_name }}</h2>
 
-                <!-- Stock Status -->
-                <div class="mb-3">
-                    {% if single_product.stock > 0 %}
-                        <span class="badge badge-success p-2"><i class="fa fa-check-circle"></i> In Stock: {{ single_product.stock }}</span>
-                    {% else %}
-                        <span class="badge badge-danger p-2"><i class="fa fa-times-circle"></i> Out of Stock</span>
-                    {% endif %}
-                </div>
+               <div class="mb-3">
+    {% if single_product.stock > 0 %}
+        <span class="badge badge-success p-2" style="font-size: 1.1em; background-color: #28a745;">
+            <i class="fa fa-check-circle"></i> In Stock: {{ single_product.stock }}
+        </span>
+    {% else %}
+        <span class="badge badge-danger p-2" style="font-size: 1.1em;">
+            <i class="fa fa-times-circle"></i> Out of Stock
+        </span>
+    {% endif %}
+</div>
 
                 <div class="mb-4"> 
                     <var class="price h3 font-weight-bold" style="color: var(--brand-gold);">K {{ single_product.price|floatformat:2 }}</var> 

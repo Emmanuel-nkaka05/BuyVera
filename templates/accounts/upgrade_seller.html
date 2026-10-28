@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-5 text-center">
+                    <i class="fa fa-store fa-4x mb-4" style="color: var(--brand-gold);"></i>
+                    <h3 class="font-weight-bold mb-3">Become a Seller</h3>
+                    <p class="text-muted mb-4">Upgrade your account to start uploading your own electronic products, manage stock, and sell on Veracart.</p>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-gold btn-lg w-100">Confirm Upgrade</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg w-100 mt-2">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

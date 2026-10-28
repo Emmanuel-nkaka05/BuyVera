@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
 
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 <div class="container">
-	<h2 class="title-page">Our Store</h2>
+    {% if is_deals_page %}
+        <h2 class="title-page text-danger font-weight-bold"><i class="fa fa-fire"></i> Hot Deals</h2>
+    {% else %}
+        <h2 class="title-page">Our Store</h2>
+    {% endif %}
 </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION INTRO END// ========================= -->
-
 
 
 <!-- ========================= SECTION CONTENT ========================= -->
@@ -33,19 +35,16 @@
 			<div class="card-body">
 				
 			<ul class="list-menu">
-    <!-- Change {{% to {% -->
     <li><a href="{% url 'store' %}">All Products </a></li>
-    
-    <!-- Change {{% to {% -->
     {% for category in links %}
         <li><a href="{{ category.get_url }}"> {{ category.Category_name }}  </a></li>
-    <!-- Change {{% to {% -->
     {% endfor %}
 </ul>
 
 			</div> <!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group  .// -->
+	
 	<article class="filter-group">
 		<header class="card-header">
 			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
@@ -56,45 +55,33 @@
 		<div class="filter-content collapse show" id="collapse_3" style="">
 			<div class="card-body">
 				
-				<div class="form-row">
-				<div class="form-group col-md-6">
-				  <label>Min</label>
-				  <!-- <input class="form-control" placeholder="$0" type="number"> -->
-				  	<select class="mr-2 form-control">
-						<option value="0">K 0</option>
-						<option value="50">K 50</option>
-						<option value="100">K 100</option>
-						<option value="150">K 150</option>
-						<option value="200">K 200</option>
-						<option value="500">K 500</option>
-						<option value="1000">K 1000</option>
-                       <option value="0">K 2500</option>
-						<option value="50">K 3500</option>
-						<option value="100">K 5000</option>
-						<option value="150">K 7500</option>
-						<option value="200">K 10000</option>
-
-					</select>
-				</div>
-				<div class="form-group text-right col-md-6">
-				  <label>Max</label>
-				  	<select class="mr-2 form-control">
-						<option value="0">K 0</option>
-						<option value="50">K 50</option>
-						<option value="100">K 100</option>
-						<option value="150">K 150</option>
-						<option value="200">K 200</option>
-						<option value="500">K 500</option>
-						<option value="1000">K 1000</option>
-                       <option value="0">K 2500</option>
-						<option value="50">K 3500</option>
-						<option value="100">K 5000</option>
-						<option value="150">K 7500</option>
-						<option value="200">K 10000</option>
-					</select>
-				</div>
-				</div> <!-- form-row.// -->
-				<button class="btn btn-block btn-primary">Apply</button>
+				<form action="{% url 'store' %}" method="GET" id="priceFilterForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Min</label>
+                            <select name="min_price" id="min_price" class="mr-2 form-control">
+                                <option value="0">K 0</option>
+                                <option value="500">K 500</option>
+                                <option value="1000">K 1000</option>
+                                <option value="2500">K 2500</option>
+                                <option value="5000">K 5000</option>
+                                <option value="10000">K 10000</option>
+                            </select>
+                        </div>
+                        <div class="form-group text-right col-md-6">
+                            <label>Max</label>
+                            <select name="max_price" id="max_price" class="mr-2 form-control">
+                                <option value="500">K 500</option>
+                                <option value="1000">K 1000</option>
+                                <option value="2500">K 2500</option>
+                                <option value="5000">K 5000</option>
+                                <option value="10000">K 10000</option>
+                                <option value="50000">K 50000+</option>
+                            </select>
+                        </div>
+                    </div> <!-- form-row.// -->
+                    <button type="submit" class="btn btn-block btn-gold mt-3">Apply</button>
+                </form>
 			</div><!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group .// -->
@@ -121,9 +108,37 @@
                     </div>
                     <figcaption class="info-wrap p-3">
                         <div class="fix-height">
-                            <a href="{{ product.get_url }}" class="title text-dark font-weight-bold">{{ product.product_name }}</a>
+                            
+                            <!-- DEAL ICON & PRODUCT NAME -->
+                            <a href="{{ product.get_url }}" class="title text-dark font-weight-bold d-block mb-1" style="font-size: 15px;">
+                                {% if product.is_deals %}
+                                    <i class="fa fa-fire text-danger mr-1" title="Hot Deal!"></i>
+                                {% endif %}
+                                {{ product.product_name }}
+                            </a>
+                            
+                            <!-- SELLER & VERIFIED ICON -->
+                            <div class="text-muted small mb-2">
+                                <i class="fa fa-user-circle"></i> 
+                                {% if product.seller %}
+                                    {{ product.seller.first_name }} {{ product.seller.last_name }}
+                                {% else %}
+                                    Veracart Official
+                                {% endif %}
+                                <i class="fa fa-check-circle text-primary" title="Verified Seller"></i>
+                            </div>
+
+                            <!-- STOCK COUNT -->
+                            <div class="mb-2">
+                                {% if product.stock > 0 %}
+                                    <span class="text-success small font-weight-bold"><i class="fa fa-check"></i> {{ product.stock }} in stock</span>
+                                {% else %}
+                                    <span class="text-danger small font-weight-bold"><i class="fa fa-times"></i> Out of stock</span>
+                                {% endif %}
+                            </div>
+
                             <div class="price-wrap mt-2">
-                                <span class="price font-weight-bold" style="color: var(--brand-gold);">K{{ product.price }}</span>
+                                <span class="price font-weight-bold" style="color: var(--brand-gold); font-size: 18px;">K{{ product.price|floatformat:2 }}</span>
                             </div>
                         </div>
                         <a href="{% url 'add_cart' product.id %}" class="btn btn-gold btn-block mt-3">Add to cart</a>
@@ -132,16 +147,17 @@
             </div>
             {% endfor %}
         {% else %}
+            <!-- NO PRODUCTS FOUND MESSAGE -->
             <div class="col-12 text-center py-5">
                 <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
                 <h5>No products found.</h5>
-                <p class="text-muted">Try adjusting your search or filter to find what you're looking for.</p>
+                <p class="text-muted">There are no items matching your search or price range.</p>
                 <a href="{% url 'store' %}" class="btn btn-outline-gold mt-2">Clear Filters</a>
             </div>
         {% endif %}
     </div>
 
-    <!-- Pagination (Only show if products exist) -->
+    <!-- Pagination -->
     {% if products and products.has_other_pages %}
     <nav class="mt-4" aria-label="Page navigation">
       <ul class="pagination justify-content-center">
@@ -174,5 +190,37 @@
 </div> <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+<!-- JavaScript to dynamically update Max price dropdown -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const minSelect = document.getElementById('min_price');
+        const maxSelect = document.getElementById('max_price');
+
+        if (minSelect && maxSelect) {
+            minSelect.addEventListener('change', function() {
+                const minValue = parseInt(this.value);
+                
+                for (let i = 0; i < maxSelect.options.length; i++) {
+                    const maxOptionValue = parseInt(maxSelect.options[i].value);
+                    if (maxOptionValue < minValue) {
+                        maxSelect.options[i].disabled = true;
+                    } else {
+                        maxSelect.options[i].disabled = false;
+                    }
+                }
+
+                if (parseInt(maxSelect.value) < minValue) {
+                    for (let i = 0; i < maxSelect.options.length; i++) {
+                        if (!maxSelect.options[i].disabled) {
+                            maxSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 
 {% endblock %}

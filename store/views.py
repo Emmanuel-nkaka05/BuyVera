@@ -15,26 +15,58 @@ from orders.models import OrderProduct
 def store(request, category_slug=None):
     categories = None
     products = None
+    is_deals_page = False
+    is_price_filter = False
+    
+    # Base query
+    base_query = Product.objects.select_related('seller').filter(is_available=True)
     
     if category_slug != None:
+        # CATEGORY FILTER
         categories = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(category=categories, is_available=True)
+        products = base_query.filter(category=categories)
         paginator = Paginator(products, 6)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
     else:    
         if 'keyword' in request.GET:
+            # SEARCH FILTER
             keyword = request.GET['keyword']
             if keyword:
-                products = Product.objects.order_by('-created_date').filter(
-                    Q(description__icontains=keyword) | Q(product_name__icontains=keyword), 
-                    is_available=True
+                products = base_query.order_by('-created_date').filter(
+                    Q(description__icontains=keyword) | Q(product_name__icontains=keyword)
                 )
                 product_count = products.count()
                 paged_products = products
+        
+        elif 'deals' in request.GET:
+            # DEALS FILTER
+            is_deals_page = True
+            products = base_query.filter(is_deals=True).order_by('id')
+            product_count = products.count()
+            paged_products = products
+            
+        elif 'min_price' in request.GET and 'max_price' in request.GET:
+            # PRICE RANGE FILTER
+            is_price_filter = True
+            min_price = request.GET['min_price']
+            max_price = request.GET['max_price']
+            
+            if not min_price:
+                min_price = 0
+            if not max_price:
+                max_price = 9999999
+            
+            products = base_query.filter(price__gte=min_price, price__lte=max_price).order_by('id')
+            paginator = Paginator(products, 6)
+            page = request.GET.get('page')
+            paged_products = paginator.get_page(page)
+            product_count = products.count()
+            
         else:
-            products = Product.objects.all().filter(is_available=True).order_by('id')
+            # ALL PRODUCTS
+            products = base_query.order_by('id')
             paginator = Paginator(products, 6)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
@@ -43,6 +75,8 @@ def store(request, category_slug=None):
     context = {
         'products': paged_products,
         'product_count': product_count, 
+        'is_deals_page': is_deals_page,
+        'is_price_filter': is_price_filter,
     }
     return render(request, 'store/store.html', context)
 
@@ -102,6 +136,11 @@ def submit_review(request, product_id):
 
 @login_required(login_url='login')
 def add_product(request):
+    # BLOCK BUYERS
+    if not request.user.is_seller and not request.user.is_superadmin:
+        messages.error(request, 'You must be a registered seller to upload products.')
+        return redirect('dashboard')
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -119,9 +158,13 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'store/add_product.html', {'form': form})
 
-# NEW: Edit product view for seller stock/deals
 @login_required(login_url='login')
 def edit_product(request, product_id):
+    # BLOCK BUYERS
+    if not request.user.is_seller and not request.user.is_superadmin:
+        messages.error(request, 'Access Denied.')
+        return redirect('dashboard')
+        
     product = get_object_or_404(Product, id=product_id, seller=request.user)
     
     if request.method == 'POST':
