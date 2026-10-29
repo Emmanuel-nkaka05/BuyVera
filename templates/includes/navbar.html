@@ -2,86 +2,161 @@
 
 <!-- Top Bar -->
 <div class="top-bar">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <span class="mr-3"><i class="fa fa-envelope" style="color: var(--brand-gold);"></i> support@veracart.com</span>
-            <span><i class="fa fa-truck" style="color: var(--brand-gold);"></i> Free Shipping over K50</span>
-        </div>
-        <div class="d-flex align-items-center">
-            
-            <!-- ONLY SHOW THIS IF THE USER IS A SELLER OR NOT LOGGED IN -->
-            {% if not request.user.is_authenticated or request.user.is_seller %}
-                <a href="{% url 'add_product' %}" class="mr-3 font-weight-bold" style="color: var(--brand-gold);">
-                    <i class="fa fa-store"></i> Are you a Seller?
-                </a>
-            {% endif %}
-
-            {% if request.user.is_authenticated %}
-                <span style="color: #fff; font-weight: bold; margin-right: 15px;">Hi, {{ request.user.first_name }}</span>
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-                <a href="{% url 'edit_profile' %}" class="mx-2">My Profile</a>
-                <a href="{% url 'logout' %}">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}"><i class="fa fa-user"></i> Sign In / Register</a>
-            {% endif %}
-        </div>
+  <div class="container d-flex justify-content-between align-items-center">
+    <div>
+      <span class="mr-3"
+        ><i class="fa fa-envelope" style="color: var(--brand-gold)"></i>
+        support@veracart.com</span
+      >
+      <span
+        ><i class="fa fa-truck" style="color: var(--brand-gold)"></i> Free
+        Shipping over K50</span
+      >
     </div>
+    <div class="d-flex align-items-center">
+      <!-- ONLY SHOW THIS IF THE USER IS A SELLER OR NOT LOGGED IN -->
+      {% if not request.user.is_authenticated or request.user.is_seller %}
+      <a
+        href="{% url 'add_product' %}"
+        class="mr-3 font-weight-bold"
+        style="color: var(--brand-gold)"
+      >
+        <i class="fa fa-store"></i> Are you a Seller?
+      </a>
+      {% endif %} {% if request.user.is_authenticated %}
+      <span style="color: #fff; font-weight: bold; margin-right: 15px"
+        >Hi, {{ request.user.first_name }}</span
+      >
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'edit_profile' %}" class="mx-2">My Profile</a>
+      <a href="{% url 'logout' %}">Logout</a>
+      {% else %}
+      <a href="{% url 'login' %}"
+        ><i class="fa fa-user"></i> Sign In / Register</a
+      >
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 <!-- Main Nav -->
 <div class="main-nav sticky-top">
-    <div class="container">
-        <div class="row align-items-center">
-            <!-- Logo -->
-            <div class="col-md-3">
-                <a href="{% url 'home' %}">
-                    <img src="{% static 'images/logo.png' %}" alt="Veracart Logo" style="height: 40px; width: auto;">
-                </a>
-            </div>
-            
-            <!-- Search -->
-            <div class="col-md-6 my-3 my-md-0">
-                <form action="{% url 'store' %}" method="GET">
-                    <div class="input-group">
-                        <input type="text" name="keyword" class="form-control border-right-0" placeholder="Search brands, products, styles..." style="border-radius: 20px 0 0 20px; border: 2px solid #eee;">
-                        <div class="input-group-append">
-                            <button class="btn btn-gold" type="submit" style="border-radius: 0 20px 20px 0;">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Logo -->
+      <div class="col-md-3">
+        <a href="{% url 'home' %}">
+          <img
+            src="{% static 'images/logo.png' %}"
+            alt="Veracart Logo"
+            style="height: 40px; width: auto"
+          />
+        </a>
+      </div>
 
-            <!-- Cart -->
-            <div class="col-md-3 text-right">
-                <a href="{% url 'cart' %}" class="text-decoration-none position-relative" style="color: var(--brand-dark);">
-                    <i class="fa fa-shopping-cart fa-2x"></i>
-                    <span class="badge badge-pill position-absolute" style="background: var(--brand-gold); color: #fff; top: -5px; right: -10px; font-size: 12px;">
-                        {{ cart_count }}
-                    </span>
-                    <div class="small font-weight-bold mt-1">Cart</div>
-                </a>
+      <!-- Search -->
+      <div class="col-md-6 my-3 my-md-0">
+        <form action="{% url 'store' %}" method="GET">
+          <div class="input-group">
+            <input
+              type="text"
+              name="keyword"
+              class="form-control border-right-0"
+              placeholder="Search brands, products, styles..."
+              style="border-radius: 25px 0 0 25px; border: 3px solid #464542"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-gold"
+                type="submit"
+                style="border-radius: 0 17px 17px 0"
+              >
+                <i class="fa fa-search"></i>
+              </button>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Cart -->
+      <div class="col-md-3 text-right">
+        <a
+          href="{% url 'cart' %}"
+          class="text-decoration-none position-relative"
+          style="color: var(--brand-dark)"
+        >
+          <i class="fa fa-shopping-cart fa-2x"></i>
+          <span
+            class="badge badge-pill position-absolute"
+            style="
+              background: var(--brand-gold);
+              color: #fff;
+              top: -5px;
+              right: -10px;
+              font-size: 12px;
+            "
+          >
+            {{ cart_count }}
+          </span>
+          <div class="small font-weight-bold mt-1">Cart</div>
+        </a>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Category Bar -->
 <div class="category-bar">
-    <div class="container d-flex align-items-center">
-        <a href="{% url 'store' %}" class="btn btn-gold mr-3 btn-sm" style="padding: 8px 15px;">
-            <i class="fa fa-bars"></i> ALL CATEGORIES
-        </a>
-        <ul class="nav">
-            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-            <!-- Dynamic Category Links -->
-            <li class="nav-item"><a class="nav-link" href="{% url 'products_by_category' 'smartphones' %}">Smartphones</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'products_by_category' 'laptops' %}">Laptops & PCs</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'products_by_category' 'audio' %}">Audio & Headphones</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'products_by_category' 'gaming' %}">Gaming</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'products_by_category' 'accessories' %}">Accessories</a></li>
-            <li class="nav-item"><a class="nav-link" style="color: #ff6b6b;" href="{% url 'store' %}?deals=true"><i class="fa fa-fire"></i> Deals</a></li>
-        </ul>
-    </div>
+  <div class="container d-flex align-items-center">
+    <a
+      href="{% url 'store' %}"
+      class="btn btn-gold mr-3 btn-sm"
+      style="padding: 8px 15px"
+    >
+      <i class="fa fa-bars"></i> ALL CATEGORIES
+    </a>
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home</a>
+      </li>
+      <!-- Dynamic Category Links -->
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="{% url 'products_by_category' 'smartphones' %}"
+          >Smartphones</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'products_by_category' 'laptops' %}"
+          >Laptops & PCs</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'products_by_category' 'audio' %}"
+          >Audio & Headphones</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'products_by_category' 'gaming' %}"
+          >Gaming</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="{% url 'products_by_category' 'accessories' %}"
+          >Accessories</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          style="color: #ff6b6b"
+          href="{% url 'store' %}?deals=true"
+          ><i class="fa fa-fire"></i> Deals</a
+        >
+      </li>
+    </ul>
+  </div>
 </div>

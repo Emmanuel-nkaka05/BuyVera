@@ -5,9 +5,11 @@
 <section class="section-content padding-y bg">
 <div class="container">
     <div class="row">
+        
+        <!-- BILLING & CARD DETAILS -->
         <aside class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
+            <div class="card border-0 shadow-sm rounded-lg mb-4">
+                <div class="card-body p-4">
                     <h4 class="card-title mb-4">Billing Details</h4>
                     <form action="{% url 'place_order' %}" method="POST">
                         {% csrf_token %}
@@ -48,27 +50,57 @@
                                 <label>State</label>
                                 <input type="text" name="state" class="form-control" required>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="col form-group">
                                 <label>Country</label>
                                 <input type="text" name="country" class="form-control" required>
                             </div>
-                            <div class="col form-group">
-                                <label>Order Note</label>
-                                <input type="text" name="order_note" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Order Note (Optional)</label>
+                            <input type="text" name="order_note" class="form-control">
+                        </div>
+
+                        <!-- CARD DETAILS SECTION -->
+                        <hr class="my-4">
+                        <h4 class="card-title mb-3"><i class="fa fa-credit-card text-primary"></i> Payment Details</h4>
+                        
+                        <div class="form-group">
+                            <label>Name on Card</label>
+                            <input type="text" class="form-control" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-warning btn-block text-white" style="background-color: #f9a826;">Place Order</button>
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="col form-group">
+                                <label>CVV</label>
+                                <input type="password" class="form-control" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold btn-block text-white mt-4 py-3" style="background-color: var(--brand-gold); border: none;">
+                            Place Order & Pay K{{ grand_total|floatformat:2 }}
+                        </button>
                     </form>
                 </div>
             </div>
         </aside>
 
+        <!-- ORDER SUMMARY -->
         <aside class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Your Order</h4>
+            <div class="card border-0 shadow-sm rounded-lg">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4">Your Order Summary</h4>
                     <table class="table table-borderless table-shopping-cart">
                         <thead class="text-muted">
                             <tr class="small text-uppercase">
@@ -82,8 +114,8 @@
                             <tr>
                                 <td>
                                     <figure class="itemside align-items-center">
-                                        <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm"></div>
-                                        <figcaption class="info">
+                                        <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm" style="width: 50px; object-fit: cover;"></div>
+                                        <figcaption class="info ml-2">
                                             <a href="#" class="title text-dark">{{ cart_item.product.product_name }}</a>
                                         </figcaption>
                                     </figure>
@@ -101,18 +133,24 @@
                         </tbody>
                     </table>
                     
+                    <hr>
                     <dl class="dlist-align">
                         <dt>Total price:</dt>
-                        <dd class="text-right">K {{ total }}</dd>
+                        <dd class="text-right">K {{ total|floatformat:2 }}</dd>
                     </dl>
                     <dl class="dlist-align">
-                        <dt>Tax:</dt>
-                        <dd class="text-right">K {{ tax }}</dd>
+                        <dt>Tax (2%):</dt>
+                        <dd class="text-right">K {{ tax|floatformat:2 }}</dd>
                     </dl>
                     <dl class="dlist-align">
                         <dt>Total:</dt>
-                        <dd class="text-right text-dark b"><strong>K {{ grand_total }}</strong></dd>
+                        <dd class="text-right text-dark b"><strong>K {{ grand_total|floatformat:2 }}</strong></dd>
                     </dl>
+                    <hr>
+                    <p class="text-center mb-0">
+                        <img src="{% static './images/misc/payments.png' %}" height="26" alt="Payment Methods">
+                    </p>
+                    <p class="text-center text-muted small mt-2"><i class="fa fa-shield"></i> Secure 256-bit SSL Encrypted Checkout</p>
                 </div>
             </div>
         </aside>

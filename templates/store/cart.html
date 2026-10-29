@@ -14,8 +14,8 @@
 {% else %}
     <div class="row">
       <aside class="col-lg-9">
-        <div class="card">
-          <table class="table table-borderless table-shopping-cart">
+        <div class="card border-0 shadow-sm rounded-lg">
+          <table class="table table-borderless table-shopping-cart mb-0">
             <thead class="text-muted">
               <tr class="small text-uppercase">
                 <th scope="col">Product</th>
@@ -30,11 +30,11 @@
                 <td>
                   <figure class="itemside align-items-center">
                     <div class="aside">
-                      <img src="{{ cart_item.product.images.url }}" class="img-sm" />
+                      <img src="{{ cart_item.product.images.url }}" class="img-sm" style="width: 60px; height: 60px; object-fit: cover;" />
                     </div>
-                    <figcaption class="info">
-                      <a href="#" class="title text-dark">{{ cart_item.product.product_name }}</a>
-                      <p class="text-muted small">
+                    <figcaption class="info ml-3">
+                      <a href="#" class="title text-dark font-weight-bold">{{ cart_item.product.product_name }}</a>
+                      <p class="text-muted small mb-0">
                         {% for item in cart_item.variations.all %}
                             {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
                         {% endfor %}
@@ -46,27 +46,36 @@
                   <div class="col">
                     <div class="input-group input-spinner">
                       <div class="input-group-prepend">
-                        <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button">
+                        <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light border" type="button">
                           <i class="fa fa-minus"></i>
                         </a>
                       </div>
-                      <input type="text" class="form-control" value="{{ cart_item.quantity }}" readonly />
+                      <input type="text" class="form-control text-center border" value="{{ cart_item.quantity }}" readonly />
                       <div class="input-group-append">
-                        <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button">
+                        <!-- Disable + button if stock limit reached -->
+                        {% if cart_item.quantity < cart_item.product.stock %}
+                        <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light border" type="button">
                           <i class="fa fa-plus"></i>
                         </a>
+                        {% else %}
+                        <button class="btn btn-light border disabled" type="button" title="Stock limit reached" style="cursor: not-allowed;">
+                          <i class="fa fa-plus text-muted"></i>
+                        </button>
+                        {% endif %}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td>
                   <div class="price-wrap">
-                    <var class="price"> K {{ cart_item.sub_total }}</var>
-                    <small class="text-muted">K {{ cart_item.product.price }} each</small>
+                    <var class="price font-weight-bold"> K {{ cart_item.sub_total }}</var>
+                    <small class="text-muted d-block">K {{ cart_item.product.price }} each</small>
                   </div>
                 </td>
                 <td class="text-right">
-                  <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger">Remove</a>
+                  <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="fa fa-trash"></i> Remove
+                  </a>
                 </td>
               </tr>
               {% endfor %}
@@ -76,32 +85,35 @@
       </aside>
       
       <aside class="col-lg-3">
-        <div class="card">
-          <div class="card-body">
+        <div class="card border-0 shadow-sm rounded-lg">
+          <div class="card-body p-4">
+            <h5 class="font-weight-bold mb-4">Order Summary</h5>
             <dl class="dlist-align">
               <dt>Total price:</dt>
-              <dd class="text-right">K {{ total }}</dd>
+              <dd class="text-right">K {{ total|floatformat:2 }}</dd>
             </dl>
             <dl class="dlist-align">
-              <dt>Tax:</dt>
-              <dd class="text-right">k {{ tax }}</dd>
+              <dt>Tax (2%):</dt>
+              <dd class="text-right">K {{ tax|floatformat:2 }}</dd>
             </dl>
             <dl class="dlist-align">
               <dt>Total Items:</dt>
               <dd class="text-right">{{ quantity }}</dd>
             </dl>
-            <dl class="dlist-align">
-              <dt>Grand Total:</dt>
-              <dd class="text-right text-dark b"><strong>K {{ grand_total }}</strong></dd>
-            </dl>
             <hr />
-            <p class="text-center mb-3">
-              <img src="{% static './images/misc/payments.png' %}" height="26" />
-            </p>
-            <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+            <dl class="dlist-align">
+              <dt class="font-weight-bold">Grand Total:</dt>
+              <dd class="text-right text-dark b font-weight-bold" style="color: var(--brand-gold) !important; font-size: 18px;">
+                <strong>K {{ grand_total|floatformat:2 }}</strong>
+              </dd>
+            </dl>
             
-            <!-- FIXED LINK HERE -->
-            <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
+            <a href="{% url 'checkout' %}" class="btn btn-gold btn-block mt-4"> Proceed to Checkout </a>
+            <a href="{% url 'store' %}" class="btn btn-light btn-block border mt-2">Continue Shopping</a>
+            
+            <p class="text-center mt-4 mb-0">
+              <img src="{% static './images/misc/payments.png' %}" height="20" alt="Payments" />
+            </p>
           </div>
         </div>
       </aside>

@@ -1,10 +1,10 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import datetime
 import random 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 
-from store.models import Product, Variation # <--- Added Variation
+from store.models import Product, Variation
 from .models import Cart, CartItem
 from orders.models import Order, OrderProduct, Payment
 from orders.forms import OrderForm 
@@ -22,37 +22,46 @@ def add_cart(request, product_id):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id=_cart_id(request)
-        )
+        cart = Cart.objects.create(cart_id=_cart_id(request))
     cart.save()
     
-    # Get or create the cart item
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.quantity += 1 
-        cart_item.save()
-    except CartItem.DoesNotExist:
-        cart_item = CartItem.objects.create(
-            product=product,
-            quantity=1,
-            cart=cart,
-            user=request.user if request.user.is_authenticated else None
-        )    
-        cart_item.save()
         
-        # --- ADD VARIATIONS ---
-        if 'color' in request.POST:
-            color = request.POST['color']
-            if color:
-                variation = Variation.objects.get(product=product, variation_category='color', variation_value=color)
-                cart_item.variations.add(variation)
-                
-        if 'size' in request.POST:
-            size = request.POST['size']
-            if size:
-                variation = Variation.objects.get(product=product, variation_category='size', variation_value=size)
-                cart_item.variations.add(variation)
+        # --- STOCK CHECK ---
+        if cart_item.quantity < product.stock:
+            cart_item.quantity += 1 
+            cart_item.save()
+        else:
+            messages.warning(request, f'Only {product.stock} items of {product.product_name} available in stock.')
+            return redirect('cart')
+            
+    except CartItem.DoesNotExist:
+        # --- STOCK CHECK ON NEW ITEM ---
+        if product.stock > 0:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                cart=cart,
+                user=request.user if request.user.is_authenticated else None
+            )    
+            cart_item.save()
+            
+            # Add Variations
+            if 'color' in request.POST:
+                color = request.POST['color']
+                if color:
+                    variation = Variation.objects.get(product=product, variation_category='color', variation_value=color)
+                    cart_item.variations.add(variation)
+                    
+            if 'size' in request.POST:
+                size = request.POST['size']
+                if size:
+                    variation = Variation.objects.get(product=product, variation_category='size', variation_value=size)
+                    cart_item.variations.add(variation)
+        else:
+            messages.error(request, 'This item is out of stock.')
+            return redirect('cart')
                 
     return redirect('cart')
 
@@ -164,7 +173,6 @@ def place_order(request, total=0, quantity=0):
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
 
-            # Generate order number
             yr = int(datetime.date.today().strftime('%Y'))
             dt = int(datetime.date.today().strftime('%d'))
             mt = int(datetime.date.today().strftime('%m'))
@@ -192,22 +200,19 @@ def payments(request):
     order = Order.objects.filter(user=current_user, is_ordered=False).order_by('-created_at').first()
     
     if order:
-        # 1. Create Payment
         payment = Payment(
             user=current_user,
             payment_id='MOCK-' + str(random.randint(100000, 999999)),
-            payment_method='Mock Payment',
+            payment_method='Card Payment',
             amount_paid=order.order_total,
             status='Completed',
         )
         payment.save()
 
-        # 2. Attach payment to order
         order.payment = payment
         order.is_ordered = True
         order.save()
 
-        # 3. Move cart items to OrderProduct & Reduce Stock
         cart_items = CartItem.objects.filter(cart__cart_id=_cart_id(request))
 
         for item in cart_items:
@@ -221,12 +226,10 @@ def payments(request):
             orderproduct.ordered = True
             orderproduct.save()
 
-            # REDUCE PRODUCT STOCK
             product = Product.objects.get(id=item.product_id)
             product.stock -= item.quantity
             product.save()
 
-        # 4. Clear the cart
         CartItem.objects.filter(cart__cart_id=_cart_id(request)).delete()
 
         return render(request, 'orders/order_complete.html', {'order': order})
