@@ -28,8 +28,8 @@ This project was developed to demonstrate full-stack web development capabilitie
 ### 1. User Dashboard & Order History
 ![User Dashboard](screenshots/dashboard.png)
 
-### 2. Seller Dashboard & Stock Management
-![Stock Management](screenshots/stock.png)
+### 2. Home
+![Stock Management](screenshots/home.png)
 
 ### 3. Hot Deals Section (Homepage)
 ![Hot Deals](screenshots/deals.png)
