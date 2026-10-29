@@ -4,11 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils.text import slugify
-
+from django.contrib.auth.decorators import login_required
 from .models import Product, Variation, ReviewRating
 from .forms import ProductForm, ReviewForm
 from category.models import Category
-from carts.models import CartItem
+from carts.models import CartItem  # <--- FIXED TYPO
 from carts.views import _cart_id
 from orders.models import OrderProduct
 
@@ -18,11 +18,9 @@ def store(request, category_slug=None):
     is_deals_page = False
     is_price_filter = False
     
-    # Base query
     base_query = Product.objects.select_related('seller').filter(is_available=True)
     
     if category_slug != None:
-        # CATEGORY FILTER
         categories = get_object_or_404(Category, slug=category_slug)
         products = base_query.filter(category=categories)
         paginator = Paginator(products, 6)
@@ -31,7 +29,6 @@ def store(request, category_slug=None):
         product_count = products.count()
     else:    
         if 'keyword' in request.GET:
-            # SEARCH FILTER
             keyword = request.GET['keyword']
             if keyword:
                 products = base_query.order_by('-created_date').filter(
@@ -41,14 +38,12 @@ def store(request, category_slug=None):
                 paged_products = products
         
         elif 'deals' in request.GET:
-            # DEALS FILTER
             is_deals_page = True
             products = base_query.filter(is_deals=True).order_by('id')
             product_count = products.count()
             paged_products = products
             
         elif 'min_price' in request.GET and 'max_price' in request.GET:
-            # PRICE RANGE FILTER
             is_price_filter = True
             min_price = request.GET['min_price']
             max_price = request.GET['max_price']
@@ -65,7 +60,6 @@ def store(request, category_slug=None):
             product_count = products.count()
             
         else:
-            # ALL PRODUCTS
             products = base_query.order_by('id')
             paginator = Paginator(products, 6)
             page = request.GET.get('page')
@@ -136,7 +130,6 @@ def submit_review(request, product_id):
 
 @login_required(login_url='login')
 def add_product(request):
-    # BLOCK BUYERS
     if not request.user.is_seller and not request.user.is_superadmin:
         messages.error(request, 'You must be a registered seller to upload products.')
         return redirect('dashboard')
@@ -160,7 +153,6 @@ def add_product(request):
 
 @login_required(login_url='login')
 def edit_product(request, product_id):
-    # BLOCK BUYERS
     if not request.user.is_seller and not request.user.is_superadmin:
         messages.error(request, 'Access Denied.')
         return redirect('dashboard')
